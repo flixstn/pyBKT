@@ -206,8 +206,9 @@ def inner(x):
             pair[0] *= alpha[:, t]
             pair[1] *= alpha[:, t]
             dotted, gamma_t = dot(A, alpha[:, t]), gamma[:, (t + 1)]
-            pair[:, 0] = (pair[:, 0] * gamma_t) / dotted
-            pair[:, 1] = (pair[:, 1] * gamma_t) / dotted
+            with np.errstate(divide='ignore', invalid='ignore'):
+                pair[:, 0] = (pair[:, 0] * gamma_t) / dotted
+                pair[:, 1] = (pair[:, 1] * gamma_t) / dotted
             np.nan_to_num(pair, copy = False)
             trans_softcounts_temp[0: 2, k: k + 2] += pair
             gamma[:, t] = sum(pair, axis = 0)
